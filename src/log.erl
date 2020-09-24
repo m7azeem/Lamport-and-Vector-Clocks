@@ -4,7 +4,7 @@
 %%% @end
 %%% Created : 24. Sep 2020 10:59 AM
 %%%-------------------------------------------------------------------
--module(logger).
+-module(log).
 -author("m.azeem").
 
 %% API
@@ -13,8 +13,8 @@
 start(Nodes) ->
   spawn_link(fun() ->init(Nodes) end).
 
-stop(Logger) ->
-  Logger ! stop.
+stop(Log) ->
+  Log ! stop.
 
 init(_) ->
   loop().

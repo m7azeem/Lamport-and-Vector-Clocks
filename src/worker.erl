@@ -10,8 +10,8 @@
 %% API
 -export([start/5, stop/1, peers/2]).
 
-start(Name, Logger, Seed, Sleep, Jitter) ->
-  spawn_link(fun() -> init(Name, Logger, Seed, Sleep, Jitter) end).
+start(Name, Log, Seed, Sleep, Jitter) ->
+  spawn_link(fun() -> init(Name, Log, Seed, Sleep, Jitter) end).
 
 stop(Worker) ->
   Worker ! stop.
