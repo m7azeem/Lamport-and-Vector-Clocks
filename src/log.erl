@@ -16,14 +16,24 @@ start(Nodes) ->
 stop(Log) ->
   Log ! stop.
 
-init(_) ->
-  loop().
+init(Nodes) ->
+  loop(time:clock(Nodes), []).
 
-loop() ->
+loop(Clock, HoldBackQueue) ->
   receive
     {log, From, Time, Msg} ->
-      log(From, Time, Msg),
-      loop();
+      Queue = lists:keysort(2, [{From, Time, Msg} | HoldBackQueue]),
+      UpdatedClock = time:update(From, Time, Clock),
+      UpdatedHoldBackQueue = [],
+      lists:foreach(fun({FromElement, TimeElement, MsgElement}) ->
+        case time:safe(TimeElement, UpdatedClock) of
+          true ->
+            log(FromElement, TimeElement, MsgElement);
+          false ->
+            lists:append([{FromElement, TimeElement, MsgElement}], UpdatedHoldBackQueue)
+        end
+      end, Queue),
+      loop(UpdatedClock, UpdatedHoldBackQueue);
     stop ->
       ok
   end.
