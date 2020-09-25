@@ -17,16 +17,16 @@ stop(Log) ->
   Log ! stop.
 
 init(Nodes) ->
-  loop(time:clock(Nodes), []).
+  loop(vect:clock(Nodes), []).
 
 loop(Clock, HoldBackQueue) ->
   receive
     {log, From, Time, Msg} ->
       Queue = lists:keysort(2, [{From, Time, Msg} | HoldBackQueue]),
-      UpdatedClock = time:update(From, Time, Clock),
+      UpdatedClock = vect:update(From, Time, Clock),
       UpdatedHoldBackQueue = [],
       lists:foreach(fun({FromElement, TimeElement, MsgElement}) ->
-        case time:safe(TimeElement, UpdatedClock) of
+        case vect:safe(TimeElement, UpdatedClock) of
           true ->
             log(FromElement, TimeElement, MsgElement);
           false ->

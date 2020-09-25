@@ -57,14 +57,16 @@ update(Node, Time, Clock) ->
       [{Node, Time} | Clock]
   end.
 
-safe(Time, Clock) ->
-  Safe = [],
-  lists:foreach(fun({Name, _}) ->
-    case lists:keyfind(Name, 1, Clock) of
-      {Name, WorkerTime} ->
-        lists:append(leq(Time, WorkerTime), Safe);
-      false ->
-        false
-    end
-  end, Time),
-  length(Safe) == length(Time).
+safe([], _) ->
+  true;
+safe([{Name, Ti}| Rest], Clock) ->
+  case lists:keyfind(Name, 1, Clock) of
+    {_, Tj} ->
+      if Ti =< Tj ->
+        safe(Rest, Clock);
+        true ->
+          false
+      end;
+    false ->
+      false
+  end.
