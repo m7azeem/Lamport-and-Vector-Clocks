@@ -4,6 +4,7 @@
 %%% @end
 %%% Created : 24. Sep 2020 8:50 PM
 %%%-------------------------------------------------------------------
+%% Uses Lamport Clock
 -module(time).
 -author("m.azeem").
 
